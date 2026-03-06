@@ -36,7 +36,6 @@ PORT = int(os.environ.get("PORT", 10000))
 
 
 # ================= CONFIG =================
-BOT_TOKEN = "YOUR_TOKEN"
 ADMIN_ID = 7849592882
 APK_PATH = "PRINCE NUMBER SHORT VIP.apk"
 VOICE_PATH = "VOICEHACK.ogg"
@@ -288,6 +287,9 @@ async def capture_user_message(update: Update, context: ContextTypes.DEFAULT_TYP
 
 
 def main():
+    # start web server for Render health check
+    threading.Thread(target=run_web).start()
+
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
@@ -302,17 +304,15 @@ def main():
     # Run webhook
     app.run_webhook(
         listen="0.0.0.0",
-        port=int(PORT),
+        port=PORT,
         url_path=BOT_TOKEN,
         webhook_url=f"{RENDER_URL}/{BOT_TOKEN}",
     )
-def user_exists(user_id: int):
-    cursor.execute("SELECT 1 FROM users WHERE user_id=?", (user_id,))
-    return cursor.fetchone() is not None
-
+    
 
 if __name__ == "__main__":
     main()
+
 
 
 
