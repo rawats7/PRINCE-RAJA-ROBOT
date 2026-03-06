@@ -38,7 +38,7 @@ PORT = int(os.environ.get("PORT", 10000))
 # ================= CONFIG =================
 BOT_TOKEN = "YOUR_TOKEN"
 ADMIN_ID = 7849592882
-APK_PATH = "𝐕𝐈𝐏_𝐏𝐀𝐍𝐍𝐄𝐋_𝐍𝐔𝐌𝐁𝐄𝐑_𝐇𝐀𝐂𝐊.apk"
+APK_PATH = "PRINCE NUMBER SHORT VIP.apk"
 VOICE_PATH = "VOICEHACK.ogg"
 DB_NAME = "users.db"
 # ==========================================
@@ -314,6 +314,7 @@ def user_exists(user_id: int):
 
 if __name__ == "__main__":
     main()
+
 
 
 
