@@ -11,11 +11,34 @@ from telegram.ext import (
 )
 from telegram.ext import MessageHandler, filters
 from telegram.error import Forbidden, BadRequest, TimedOut, NetworkError
+from flask import Flask
+import threading
+
+app_web = Flask(__name__)
+
+@app_web.route("/")
+def home():
+    return "Bot is running!"
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    app_web.run(host="0.0.0.0", port=port)
+
+
+
+
+
+
+
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+RENDER_URL = os.getenv("RENDER_URL")
+PORT = int(os.environ.get("PORT", 10000))
+
 
 # ================= CONFIG =================
-BOT_TOKEN = "7964652873:AAGrU-UsxR1_7pUI8luOTpM7gNvB0J4q8_8"
+BOT_TOKEN = "YOUR_TOKEN"
 ADMIN_ID = 7849592882
-APK_PATH = "PRINCE NUMBER SHORT VIP.apk"
+APK_PATH = "𝐕𝐈𝐏_𝐏𝐀𝐍𝐍𝐄𝐋_𝐍𝐔𝐌𝐁𝐄𝐑_𝐇𝐀𝐂𝐊.apk"
 VOICE_PATH = "VOICEHACK.ogg"
 DB_NAME = "users.db"
 # ==========================================
@@ -82,9 +105,9 @@ async def send_welcome_package(user, context: ContextTypes.DEFAULT_TYPE):
 (केवल प्रीमियम उपयोगकर्ताओं के लिए)💎
 (𝟏𝟎𝟎% नुकसान की भरपाई की गारंटी)🧬
 
-♻सहायता के लिए @KING_4MONEY
+♻सहायता के लिए @RAJPUT_P3
 🔴हैक का उपयोग कैसे करें
-https://t.me/rajaindiaprediction/54""",
+https://t.me/+d3uPsGG7m-ljZTY1""",
                 )
         except Exception as e:
             logging.error(f"APK send error: {e}")
@@ -97,9 +120,9 @@ https://t.me/rajaindiaprediction/54""",
                     chat_id=user.id,
                     voice=voice,
                     caption="""🎙 सदस्य 9X गुना लाभ का प्रमाण 👇🏻
-https://t.me/rajaindiaprediction/56
+https://t.me/+d3uPsGG7m-ljZTY1
 
-♻सहायता के लिए @KING_4MONEY
+♻सहायता के लिए @RAJPUT_P3
 लगातार नंबर पे नंबर जीतना 🤑♻👑""",
                 )
         except Exception as e:
@@ -264,24 +287,23 @@ async def capture_user_message(update: Update, context: ContextTypes.DEFAULT_TYP
     
 
 
-# ================= MAIN =================
 def main():
+
+    # start web server thread (for Render)
+    threading.Thread(target=run_web).start()
+
     app = Application.builder().token(BOT_TOKEN).build()
 
-    # Commands first
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("broadcast", broadcast))
     app.add_handler(CommandHandler("users", users_count))
-
-    # Join request handler
     app.add_handler(ChatJoinRequestHandler(approve_and_send))
 
-    # Message handler LAST (very important)
+    # message handler
     app.add_handler(
         MessageHandler(filters.ALL & ~filters.COMMAND, capture_user_message)
     )
 
-    # IMPORTANT: remove allowed_updates restriction
     app.run_polling()
 
 
@@ -292,3 +314,6 @@ def user_exists(user_id: int):
 
 if __name__ == "__main__":
     main()
+
+
+
