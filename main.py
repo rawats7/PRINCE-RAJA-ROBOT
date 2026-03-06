@@ -288,10 +288,6 @@ async def capture_user_message(update: Update, context: ContextTypes.DEFAULT_TYP
 
 
 def main():
-
-    # start web server thread (for Render)
-    threading.Thread(target=run_web).start()
-
     app = Application.builder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
@@ -299,14 +295,17 @@ def main():
     app.add_handler(CommandHandler("users", users_count))
     app.add_handler(ChatJoinRequestHandler(approve_and_send))
 
-    # message handler
     app.add_handler(
         MessageHandler(filters.ALL & ~filters.COMMAND, capture_user_message)
     )
 
-    app.run_polling()
-
-
+    # Run webhook
+    app.run_webhook(
+        listen="0.0.0.0",
+        port=int(PORT),
+        url_path=BOT_TOKEN,
+        webhook_url=f"{RENDER_URL}/{BOT_TOKEN}",
+    )
 def user_exists(user_id: int):
     cursor.execute("SELECT 1 FROM users WHERE user_id=?", (user_id,))
     return cursor.fetchone() is not None
@@ -314,6 +313,7 @@ def user_exists(user_id: int):
 
 if __name__ == "__main__":
     main()
+
 
 
 
